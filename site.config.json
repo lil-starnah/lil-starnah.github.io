@@ -1,0 +1,6 @@
+{
+  "name": "Where to Stream",
+  "url": "http://localhost:8080/",
+  "repo": "https://github.com/OWNER/REPO",
+  "titleLimit": 20000
+}

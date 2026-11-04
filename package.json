@@ -1,0 +1,12 @@
+{
+  "name": "where-to-stream",
+  "private": true,
+  "type": "module",
+  "description": "Static site listing legal streaming options per film and TV series, by IMDb or TMDB id.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node src/build.mjs",
+    "check": "node src/check.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}
