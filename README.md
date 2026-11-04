@@ -1,4 +1,4 @@
-# Where to Stream
+# where2watch
 
 A static site that lists where a film or TV series can be watched legally, country by country. Availability comes from JustWatch through the TMDB API. Anyone can add a direct link to a licensed service through a GitHub issue.
 

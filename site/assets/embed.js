@@ -31,7 +31,7 @@
       var cc = list.indexOf(want) !== -1 ? want : W.pickCountry(list);
       function draw() {
         var to = function () { return page + '#' + cc; };
-        var body = W.community(d, cc, to, '_blank') + W.offers(d, cc, to, '_blank');
+        var body = W.offers(d, cc, to, '_blank');
         root.innerHTML = '<header class="e-hd"><h1><a href="' + W.esc(page) + '" target="_blank">' + W.esc(d.t) + (d.y ? ' <span>' + d.y + '</span>' : '') + '</a></h1>'
           + '<label class="sr" for="ecc">Country</label><select id="ecc">' + list.map(function (c) {
             return '<option value="' + c + '"' + (c === cc ? ' selected' : '') + '>' + W.esc(W.countryName(c)) + '</option>';

@@ -37,31 +37,43 @@
     return Object.keys(set).sort(function (a, b) { return countryName(a).localeCompare(countryName(b)); });
   }
 
-  /* One country's offers. href(kind, providerId) gives each item's link. */
+  /* Which kinds one country has, in display order, with how many services each. */
+  function kinds(d, cc) {
+    var row = (d.c || {})[cc] || {};
+    var ls = (d.links || []).filter(function (l) { return l.country === cc; });
+    return KINDS.map(function (k) {
+      var n = (row[k[0]] || []).length + ls.filter(function (l) { return l.kind === k[0]; }).length;
+      return { id: k[0], label: k[1], n: n };
+    }).filter(function (k) { return k.n; });
+  }
+
+  /* One country's offers, one row each: logo, service and kind, then the
+     button. Direct links from the community lead each kind. href(kind,
+     providerId, link) gives a row's link; link is set for a direct link. */
   function offers(d, cc, href, target) {
     var row = (d.c || {})[cc] || {};
-    var html = '';
-    KINDS.forEach(function (k) {
-      var ids = row[k[0]] || [];
-      if (!ids.length) return;
-      html += '<div class="kind"><h3>' + k[1] + '</h3><ul class="plist">' + ids.map(function (id) {
-        var p = d.p[id] || ['Unknown', ''];
-        var logo = p[1] ? '<img src="' + IMG + esc(p[1]) + '" width="40" height="40" alt="" loading="lazy">'
-          : '<span class="nologo" aria-hidden="true">' + esc(p[0].slice(0, 1)) + '</span>';
-        return '<li><a href="' + esc(href(k[0], id)) + '" rel="nofollow"' + (target ? ' target="' + target + '"' : '') + '>' + logo + '<b>' + esc(p[0]) + '</b></a></li>';
-      }).join('') + '</ul></div>';
-    });
-    return html;
-  }
-
-  function community(d, cc, href, target) {
     var ls = (d.links || []).filter(function (l) { return l.country === cc; });
-    if (!ls.length) return '';
-    var label = {}; KINDS.forEach(function (k) { label[k[0]] = k[1]; });
-    return '<div class="kind"><h3>From the community</h3><ul class="clist">' + ls.map(function (l) {
-      return '<li><a href="' + esc(href(l)) + '" rel="nofollow ugc noopener"' + (target ? ' target="' + target + '"' : '') + '><b>' + esc(l.service) + '</b><span>' + esc(label[l.kind] || l.kind) + (l.note ? ' &middot; ' + esc(l.note) : '') + '</span></a></li>';
-    }).join('') + '</ul></div>';
+    var t = target ? ' target="' + target + '"' : '';
+    var html = '';
+    function item(kind, url, rel, logo, name, sub, cta) {
+      return '<li class="offer" data-kind="' + kind + '"><a href="' + esc(url) + '" rel="' + rel + '"' + t + '>' + logo
+        + '<span class="o-name"><b>' + esc(name) + '</b><small>' + sub + '</small></span><span class="cta' + cta + '">Watch now</span></a></li>';
+    }
+    KINDS.forEach(function (k) {
+      var strong = k[0] === 'flatrate' || k[0] === 'free' || k[0] === 'ads' ? '' : ' quiet';
+      ls.filter(function (l) { return l.kind === k[0]; }).forEach(function (l) {
+        html += item(k[0], href(k[0], null, l), 'nofollow ugc noopener', '<span class="logo">' + esc(l.service.slice(0, 1)) + '</span>',
+          l.service, k[1] + ' &middot; ' + (l.note ? esc(l.note) : 'Direct link'), strong);
+      });
+      (row[k[0]] || []).forEach(function (id) {
+        var p = d.p[id] || ['Unknown', ''];
+        var logo = p[1] ? '<img class="logo" src="' + IMG + esc(p[1]) + '" width="48" height="48" alt="" loading="lazy">'
+          : '<span class="logo">' + esc(p[0].slice(0, 1)) + '</span>';
+        html += item(k[0], href(k[0], id), 'nofollow', logo, p[0], k[1], strong);
+      });
+    });
+    return html ? '<ul class="offers">' + html + '</ul>' : '';
   }
 
-  window.W = { esc: esc, countryName: countryName, pickCountry: pickCountry, saveCountry: saveCountry, countries: countries, offers: offers, community: community };
+  window.W = { esc: esc, countryName: countryName, pickCountry: pickCountry, saveCountry: saveCountry, countries: countries, kinds: kinds, offers: offers };
 })();
