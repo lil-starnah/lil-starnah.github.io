@@ -1,6 +1,6 @@
 {
   "name": "Where to Stream",
-  "url": "http://localhost:8080/",
-  "repo": "https://github.com/OWNER/REPO",
+  "url": "https://lennycohen.github.io/where-to-stream/",
+  "repo": "https://github.com/lennycohen/where-to-stream",
   "titleLimit": 20000
 }
