@@ -3,3 +3,4 @@ node_modules/
 dist/
 .cache/
 .link-result.json
+.impeccable/
